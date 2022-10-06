@@ -1,21 +1,16 @@
-
-import time
+import base64
+from matplotlib.backend_bases import RendererBase
 import numpy as np
-
+import json
+from streamlit_lottie import st_lottie
 import streamlit as st
-from streamlit.hello.utils import show_code
-
 import numpy as np
-import random
-from sklearn import linear_model
-from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
-from traitlets import Int
 np.random.seed(3)
 
 st.set_page_config(
     page_title="Clase 2",
-    page_icon="🏎️",
+    page_icon="🚗",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
@@ -82,6 +77,15 @@ def update_weights_biases(x, y, weight, bias, delta_weight, delta_bias):
         
     return weight, bias, y_, residuo
 st.markdown("# Clase 2")
+
+def load_lottieurl(filepath: str):
+    with open(filepath,"r") as f:
+        return json.load(f)
+
+lottie_hello = load_lottieurl("pages/images/toaster.json")
+
+st_lottie(lottie_hello,speed = 1, reverse=False,loop=True,quality="low",height=600,width=None,key=None,)
+
 with open("pages/notebooks/clase_2.zip", "rb") as fp:
     btn = st.download_button(
         label="Descarga notebook",
@@ -171,7 +175,7 @@ ax.scatter(x,y,s=6)
 st.pyplot(fig)
 
 st.write("# Buscando la correlación entre las muestras: ")
-st.write('''Se tiene un conjunto de muestras (puntos) $(x_i, y_i)$, y se busca encontrar una función $F$ que describa una posible correlación entre ellos. $X$, con valores $x_i$ (en el presente caso el tiempo) es una variable independiente, mientras que $Y$, con los valores $y_i$ (la distancia en el presente caso) depende de $X$.
+st.write(r'''Se tiene un conjunto de muestras (puntos) $(x_i, y_i)$, y se busca encontrar una función $F$ que describa una posible correlación entre ellos. $X$, con valores $x_i$ (en el presente caso el tiempo) es una variable independiente, mientras que $Y$, con los valores $y_i$ (la distancia en el presente caso) depende de $X$.
 
 Para encontrar la correlación entre las muestras, proponemos un conjunto de funciones definidas mediante la siguiente relación lineal:
 
@@ -657,7 +661,7 @@ st.write('## Métodos alternativos para optimizar los parámetros $W$ y $b$')
 
 st.write('### Método simple de mínimos cuadrados, de acuerdo a Gauss')
 
-st.write('''El método de mínimos cuadrados nos permite encontrar una función que describe la correlación que tienen un conjunto m de puntos $(x_i, y_i)$, en donde $x_i$ son los valores que toma la variable $X$ y $y_i$ son los valores que toma la variable $Y$.
+st.write(r'''El método de mínimos cuadrados nos permite encontrar una función que describe la correlación que tienen un conjunto m de puntos $(x_i, y_i)$, en donde $x_i$ son los valores que toma la variable $X$ y $y_i$ son los valores que toma la variable $Y$.
 
 
 El objetivo del algoritmo es obtener la relación entre la variable independiente $X$, y la variable dependiente $Y$.
@@ -675,13 +679,13 @@ st.write('La diferencia entre el valor real $y_i$ de $Y$ y el valor estimado $F(
 st.latex(r'r_i = y_i - F(x_i, W, b) ')
 st.write('El objetivo del método de mínimos cuadrados es minimizar la suma del cuadrado de estos  residuos, es decir, encontrar el mínimo de la función Residuo:')
 st.latex(r'Residuo = \dfrac {1}{m} ∑_{i=1}^{m}(y_i - b -Wx_i)^{2}')
-st.write('''El mínimo de esta función, se encuentra en aquellos valores de $W$ ($W_{opt}$) y $b$ ($b_{opt}$) en donde la derivada de la función residuo es igual a zero. 
+st.write(r'''El mínimo de esta función, se encuentra en aquellos valores de $W$ ($W_{opt}$) y $b$ ($b_{opt}$) en donde la derivada de la función residuo es igual a zero. 
     
     
 Para encontrar este mínimo, primero calculamos la derivada parcial de la función respecto a cada uno de los parámetros $W$ y $b$, después, cada derivada la igualamos a cero:''')
 st.latex(r'\dfrac{∂Residuo}{∂{W}} =0⟶ W_{opt}=\dfrac{∑_{i=1}^{n}(x_i–\bar x)(y_i–\bar y)}{∑_{i=1}^{m}(x_i–\bar x)^2}')
 st.latex(r' \dfrac{∂Residuo}{∂{b}}=0⟶ b_{opt}=y – W_{opt} x ')
-st.write('en donde $\bar x$ y $\bar y$ son los valores promedio de los valores de las variables $X$ y $Y$.')
+st.write(r'en donde $\bar x$ y $\bar y$ son los valores promedio de los valores de las variables $X$ y $Y$.')
 
 st.code('''def mean_square_error(x, y):
     
@@ -766,3 +770,288 @@ plot_x_y_y__(x, y, y_, points=True)''')
 y_ = w_opt_mse*x + b_opt_mse
 
 plot_x_y_y__(x, y, y_, points=True)
+
+st.code('''MSE = np.mean((y-w_opt*x-b_opt)**2)
+print('MSE: {0:10.2f}'.format(MSE))''')
+
+MSE = np.mean((y-w_opt*x-b_opt)**2)
+st.write('$MSE: {0:10.2f}'.format(MSE))
+
+st.code('''y_MSE = x*w_opt + b_opt
+
+plt.figure(figsize=(13,8))
+plt.rc('xtick', labelsize=16)
+plt.rc('ytick', labelsize=16)
+plt.rc('legend', fontsize=16)
+plt.ylabel('Y', fontsize=16)
+plt.xlabel('X', fontsize=16)
+
+
+plt.plot(x, y_hand, color='magenta', label='hand_MSE-residuo', lw=6)
+
+plt.plot(x, y_MSE, color='blue', label = 'Gauss_MSE-residuo', lw=3)
+
+plt.legend()
+
+plt.scatter(x, y)
+
+plt.show()
+''')
+
+
+y_MSE = x*w_opt + b_opt
+fig, ax = plt.subplots()
+ax.set_ylabel('Y',fontdict = {'fontsize':16})
+ax.set_xlabel('X',fontdict = {'fontsize':16})
+ax.plot(x, y_hand, color='magenta', label='hand_MSE-residuo', lw=6)
+ax.legend(fontsize=6)
+ax.plot(x, y_MSE, color='blue', label = 'Gauss_MSE-residuo', lw=3)
+ax.legend(fontsize=6)
+ax.scatter(x, y,s=6)
+st.pyplot(fig)
+
+st.write('''Como vimos anteriormente, la función $F(X,W,b)$ que describe la correlacion entre las variables $X$ y $Y$, se obtiene definiendo la métrica descrita por la función $Residuo$.
+Cuando esta función Residuo tiene su mínimo (el error mínimo) su derivada es cero. Es por ello, que podriamos emplear el método de Newton-Raphson para encontrar este cero.''')
+
+st.write('''### Método de Newton-Raphson para encontrar el cero de una función. 
+    
+### Este método emplea la función y su derivada.''')
+
+st.write('''
+Otra alternativa para encontrar los valores de W y b para los cuales el residuo es mínimo es emplear un método iterativo desarrollado por Isaac Newton y Joseph Raphson en el siglo XVII para encontrar los ceros de una función. Hoy en día, este método es conocido como el método de Newton-Raphson.
+   
+Para emplear este método en nuestro caso se tendría que obtener la derivada de la función Residuo. Los valores de $W$ y $b$ se actualizarían empleando la siguiente relación:  ''')
+st.latex(r'W_{new} = W_{actual} - \dfrac {Residuo} {\dfrac {∂Residuo}{∂{W}}}')
+st.latex(r'b_{new} = b_{actual} - \dfrac {Residuo} {\dfrac {∂Residuo}{∂{b}}}')
+st.write('''El código que generaremos para emplear este método requiere un valor inicial de la variable que define la función, así como una epsilon para estimar si el error ya se puede considerar como cero. El método tambien toma en cuenta el número máximo de iteraciones que se deben realizar para encontrar este cero.''')
+st.write('''Para introducir este método emplearemos la función $f(x)$ que depende de $x$, y de la cual queremos obtener sus ceros. La expresión correspondiente queda como:''')
+st.latex(r'x_{new} = x_{actual} - \dfrac {f(x)} {\dfrac {df(x)}{d{x}}}')
+
+file_ = open("pages/images/NewtonIteration_Ani.gif", "rb")
+contents = file_.read()
+data_url = base64.b64encode(contents).decode("utf-8")
+file_.close()
+
+st.markdown(
+    f'<center> <img src="data:image/gif;base64,{data_url}" alt="cat gif"> </center>',
+    unsafe_allow_html=True,
+) 
+st.markdown('(By Ralf Pfeifer - de:Image:NewtonIteration Ani.gif, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2268473)')
+
+st.markdown('A continuación definimos la función newton_raphson para implementar este método')
+
+
+st.code('''def newton_raphson(f, Df,x0,epsilon,max_iter):
+    #Approximate solution of f(x)=0 by Newton's method.
+
+    #Parameters
+    #----------
+    #f : function
+        
+    #Df : Derivative of f(x).
+    
+    #x0 : Initial guess for finding the root of f(x).
+    
+    #epsilon :Stopping criteria: the iteration ends when abs(f(x)) < epsilon.
+    
+    #max_iter : Maximum number of iterations of Newton's method.
+
+    #Returns
+    #-------
+    #xn : number
+        #Implement Newton's method: compute the linear approximation
+        #of f(x) at xn and find x intercept by the formula
+            #x = xn - f(xn)/Df(xn)
+        #Continue until abs(f(xn)) < epsilon and return xn.
+        #If Df(xn) == 0, return None. If the number of iterations
+        #exceeds max_iter, then return None.
+    
+    aprox_root = [x0]
+    
+    xn = x0
+      
+    # xn es la aproximación de la raíz de f. Inicialmente xn =x0 con x0 la primera aproximación
+    
+    for n in range(0,max_iter):
+        
+        fxn = f(xn)
+       
+        #print("xn = ", xn, "aprox_root = ", aprox_root)
+        
+        if abs(fxn) < epsilon:
+            
+            print("x = ", xn, ", f(x) = ", fxn, ", df(x)/dx = ", Dfxn)
+            print('The solution is found after',n,'iterations.')
+                        
+            return xn, aprox_root
+        
+        Dfxn = Df(xn)
+        
+        if Dfxn == 0:
+            
+            print('Zero derivative. No solution found.')
+            
+            return None
+        
+        print("x = ", xn, ", f(x) = ", fxn, ", df(x)/dx = ", Dfxn)
+        
+        xn = xn - fxn/Dfxn
+        
+        aprox_root.append(xn)
+        
+    print('Exceeded maximum iterations. No solution found.')
+    
+    return None''')
+
+def newton_raphson(f, Df,x0,epsilon,max_iter):
+    aprox_root = [x0]
+    xn = x0
+    for n in range(0,max_iter):
+        fxn = f(xn)
+        if abs(fxn) < epsilon:
+            st.write("$x = ", xn, ", f(x) = ", fxn, ", df(x)/dx = ", Dfxn)
+            st.write('$The solution is found after',n,'iterations.')      
+            return xn, aprox_root
+        Dfxn = Df(xn)
+        if Dfxn == 0:
+            st.write('$Zero derivative. No solution found.')
+            return None
+        st.write("x = ", xn, ", f(x) = ", fxn, ", df(x)/dx = ", Dfxn)
+        xn = xn - fxn/Dfxn
+        aprox_root.append(xn)
+    st.write('$Exceeded maximum iterations. No solution found.')
+    return None
+
+st.write('Se prueba este método con una función simple')
+
+st.code('''#p = lambda x: x**3-27
+
+def p(x):
+    
+    return x**3-10''')
+
+def p(x):    
+    return x**3-10
+
+st.code('''x_ = np.arange(-10, 10, 0.2)
+print (x_.shape)
+sigma_samples = 5
+y_ = p(x_)
+print(y_[:5])
+
+plt.figure(figsize=(13,8))
+plt.rc('xtick', labelsize=16)
+plt.rc('ytick', labelsize=16)
+plt.rc('legend', fontsize=16)
+plt.ylabel('Y', fontsize=16)
+plt.xlabel('X', fontsize=16)
+
+
+plt.grid(True)
+
+plt.plot(x_, y_, "o", ms=5, alpha= 0.5, color='r')
+
+plt.show()
+
+#print(y_)''')
+
+
+x_ = np.arange(-10, 10, 0.2)
+st.write(x_.shape)
+sigma_samples = 5
+y_ = p(x_)
+st.write(y_[:5])
+
+fig, ax = plt.subplots()
+ax.set_ylabel('Y',fontdict = {'fontsize':16})
+ax.set_xlabel('X',fontdict = {'fontsize':16})
+ax.grid(True)
+ax.plot(x_, y_, "o", ms=5, alpha= 0.5, color='r')
+st.pyplot(fig)
+
+st.write('Calculemos la derivada de la función')
+
+st.code('''#Dp = lambda x: 3*x**2 
+
+def Dp(x):
+    
+    return 3*x**2
+''') 
+
+def Dp(x):
+    return 3*x**2
+
+st.write('Para visualizar el método dibujemos la pendiente en cada punto en donde esta se calcula durante la búsqueda del cero.')
+
+st.code('''def tangent_line(f, Df, x_0, a, b):
+        
+    x = np.linspace(a,b)
+    
+    y = f(x) 
+    
+    y_0 = f(x_0)
+    
+    y_tan = Df(x_0) * (x - x_0) + y_0 
+    
+    plt.figure(figsize=(13,8))
+    plt.rc('xtick', labelsize=16)
+    plt.rc('ytick', labelsize=16)
+    plt.rc('legend', fontsize=16)
+    plt.ylabel('Y', fontsize=16)
+    plt.xlabel('X', fontsize=16)
+
+
+
+    #plt.plot(x,y,'r-')
+    plt.plot(x_, y_, "o", ms=5, alpha= 0.5, color='r')
+    
+    plt.plot(x,y_tan,'b-')
+    
+    plt.xlabel('x') 
+    
+    plt.ylabel('y') 
+    
+    plt.grid(True)
+    
+    plt.title('Plot of the function and its tangent at x') 
+    
+    plt.show()  ''')
+
+def tangent_line(f, Df, x_0, a, b):
+    x = np.linspace(a,b)
+    y_0 = f(x_0)  
+    y_tan = Df(x_0) * (x - x_0) + y_0   
+    fig, ax = plt.subplots()
+    ax.set_ylabel('Y',fontdict = {'fontsize':16})
+    ax.set_xlabel('X',fontdict = {'fontsize':16})
+    ax.grid(True)
+    ax.plot(x_, y_, "o", ms=5, alpha= 0.5, color='r')   
+    ax.plot(x,y_tan,'b-')
+    ax.grid(True)
+    ax.set_title('Plot of the function and its tangent at x') 
+    st.pyplot(fig)
+
+st.code('''
+for i in newton_raphson(p,Dp,7.5,0.001,50)[1]:
+
+    tangent_line(p, Dp, i, -10, 10)''')
+
+for i in newton_raphson(p,Dp,7.5,0.001,50)[1]:
+    tangent_line(p, Dp, i, -10, 10)
+    
+st.markdown(r'''Para aplicar este método en nuestro caso, es necesario implementarlo para dos variables ($W$ y $b$). Sin embargo, en nuestro caso el gradiente del Residuo varía linealmente con cada una de estas variables. Su pendiente es entonces constante.
+
+El método en general ha sido implementado para problemas con multivariables (número de variables mayor a 2)
+
+(Descarga el contenido y se encuentra en el archivo **Newton-Raphson-multivariate.pdf**)
+
+
+Otra alternativa para encontrar los valores de $W$ y $b$ para los cuales el residuo es mínimo, es emplear un método iterativo desarrollado por Cauchy en el siglo XIX. Hoy en día este método de optimización es conocido como el método de gradiente descendente.
+    
+(Descarga el contenido y se encuentra en el archivo **Cauchy_gradient-descent.pdf**)
+    
+En este caso durante la optimización, los valores de los parámetros $W$ y $b$ cambian su valor disminuyéndolo con el respectivo valor del gradiente del residuo multiplicado par el factor $ \alpha $ (> 0).''')
+
+st.latex(r'W_{new} = W_{actual} - \alpha \dfrac{∂Residuo}{∂{W}}')
+st.latex(r'b_{new} = b_{actual} - \alpha \dfrac{∂Residuo}{∂{b}}')
+

@@ -880,7 +880,7 @@ data_url = base64.b64encode(contents).decode("utf-8")
 file_.close()
 
 st.markdown(
-    f'<center> <img src="data:image/gif;base64,{data_url}" alt="cat gif"> </center>',
+    f'<center> <img width="90%" src="data:image/gif;base64,{data_url}" alt="cat gif"> </center>',
     unsafe_allow_html=True,
 ) 
 st.markdown('(By Ralf Pfeifer - de:Image:NewtonIteration Ani.gif, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2268473)')

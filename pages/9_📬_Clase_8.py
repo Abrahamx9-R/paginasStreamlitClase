@@ -4,6 +4,25 @@ from streamlit_lottie import st_lottie
 import numpy as np
 import matplotlib.pyplot as plt
 
+import time
+
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.layers import Input, Dense, Activation, Flatten
+from tensorflow.keras.models import Model
+import pydot
+import IPython
+from tensorflow.keras.utils import plot_model
+
+
+from matplotlib.pyplot import imshow, show
+
+import pickle
+import gzip
+
+np.random.seed(1)
+
+
 np.random.seed(10)
 
 from utils import show_image_local, show_text_color
@@ -104,27 +123,6 @@ import gzip
 np.random.seed(1)
 %matplotlib inline''')
 
-import numpy as np
-import time
-
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.layers import Input, Dense, Activation, Flatten
-from tensorflow.keras.models import Model
-import pydot
-import IPython
-from IPython.display import SVG
-from tensorflow.keras.utils import plot_model
-from tensorflow.keras.optimizers import SGD
-
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import imshow, show
-
-import pickle
-import gzip
-
-np.random.seed(1)
 
 
 st.code('''print("Numpy version", np.__version__)

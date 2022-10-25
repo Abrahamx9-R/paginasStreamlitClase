@@ -1,5 +1,4 @@
 import base64
-from matplotlib.backend_bases import RendererBase
 import numpy as np
 import json
 from streamlit_lottie import st_lottie

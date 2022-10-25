@@ -1,5 +1,3 @@
-from click import option
-from soupsieve import select
 import streamlit as st
 from streamlit.logger import get_logger
 import json

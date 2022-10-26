@@ -14,7 +14,7 @@ def run():
         page_icon="💻",
     )
 
-    st.write("# Bienvenido al primer prototipo del cuerso de Temas Selectos de Física Computacional I (Inteligencia Artificial en la Física) 👋🔭")
+    st.write("# Bienvenido al primer prototipo del curso de Temas Selectos de Física Computacional I (Inteligencia Artificial en la Física) 👋🔭")
 
     st.sidebar.success("Selecciona una clase")
 

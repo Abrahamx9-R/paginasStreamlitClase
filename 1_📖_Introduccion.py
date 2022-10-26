@@ -3,6 +3,8 @@ from streamlit.logger import get_logger
 import json
 from streamlit_lottie import st_lottie
 
+from utils import footer
+
 LOGGER = get_logger(__name__)
 
 
@@ -12,7 +14,7 @@ def run():
         page_icon="💻",
     )
 
-    st.write("# Bienvenido al cuerso de Temas Selectos de Física Computacional I (Inteligencia Artificial en la Física) 👋🔭")
+    st.write("# Bienvenido al primer prototipo del cuerso de Temas Selectos de Física Computacional I (Inteligencia Artificial en la Física) 👋🔭")
 
     st.sidebar.success("Selecciona una clase")
 
@@ -28,7 +30,7 @@ def run():
     lottie_hello = load_lottieurl("pages/images/circle_shape_morphing_animation.json")
 
     st_lottie(lottie_hello,speed = 1, reverse=False,loop=True,quality="low",height=600,width=None,key=None,)
-
+    footer()
 
 if __name__ == "__main__":
     run()
